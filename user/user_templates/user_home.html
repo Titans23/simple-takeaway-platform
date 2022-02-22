@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+</head>
+<body>
+        <a href="http://127.0.0.1:5000/user_login">退出</a>
+
+        <form action="/user/home_id={{user.id}}" method="post" enctype="multipart/form-data">
+            <h3>基本资料</h3>
+            <div class="form-group">
+                <label >当前图像：</label>
+                <img src="image/{{ user.id }}" alt="用户图片" class="now_user_pic" width="100px" height="100px">
+            </div>
+            <div class="form-group">
+                <label>上传图像：</label>
+                <input id="file" type="file" name="file" class="input_file">
+            </div>
+            <div class="form-group">
+                <label>个性签名：</label>
+                <input id="signature" type="text" name="signature" class="input_txt" value="{{ user.signature }}">
+            </div>
+            <div class="form-group">
+                <label>用户昵称：</label>
+                <input id="nick_name" type="text" name="nick_name" class="input_txt" value="{{ user.nick_name }}">
+            </div>
+            <div class="form-group">
+                <label>收货地址：</label>
+                <input id="address" type="text" name="address" class="input_txt" value="{{ user.address }}">
+            </div>
+            <div class="form-group">
+                <label>性别：</label>
+                {# 判断用户性别 #}
+                {% if user.gender == "MAN" %}
+                    <input class="gender" type="radio" name="gender" checked="checked" value="MAN"> <b>男</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="gender" type="radio" name="gender" value="WOMAN">  <b>女</b>
+                {% else %}
+                    <input class="gender" type="radio" name="gender" value="MAN"> <b>男</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="gender" type="radio" name="gender" checked="checked" value="WOMAN"><b>女</b>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="保 存" class="input_sub">
+            </div>
+
+            </form>
+        <h3 style="color: red">余额: {{ user.money }} 元</h3>
+        {% for message in get_flashed_messages() %}
+            <span style="color: red;">{{ message }}</span>
+        {% endfor %}
+        <form action="/user/addmoney_id={{user.id}}" method="post">
+            <span style="width: 40px">充值余额</span>
+            <input type="text" name="add_money" placeholder="请输入充值金额" value="0">元
+            <input type="submit" value="充 值">
+        </form>
+        <br>
+        <a href="{{ url_for('user.user_order',username=user.id,page=1) }}">点餐中心</a>
+        <h3>我的订单</h3>
+        <ul>
+            {% for order in user.orders | sort(attribute='creat_time', reverse = True) %}
+                <li>{{ order.name }} 价格:{{ order.price }}元 {{ order.state }} 点餐时间:{{ order.creat_time }}</li>
+            {% endfor %}
+        </ul>
+
+</body>
+</html>

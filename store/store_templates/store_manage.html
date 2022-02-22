@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+</head>
+<body>
+    <a href="http://127.0.0.1:5000/store/home_id={{ store.id }}">商家中心</a>
+    <h1>新增商品</h1>
+    <form action="/store/manage_goods/{{store.id}}" method="post" enctype="multipart/form-data">
+        名称 : <input type="text" name="name"><br>
+        价格 : <input type="text" name="price"><br>
+        <div class="form-group">
+                <label>上传图片：</label>
+                <input id="file" type="file" name="file" class="input_file">
+        </div>
+        <input type="submit" value="上 架">
+    </form>
+
+
+    <h1>所有商品:</h1>
+    <ul>
+        {% for good in store.goods  %}
+                <li>
+                    <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ good.id }}" alt="餐品图片" class="now_user_pic" width="100px" height="100px">
+                    编号: {{ good.id }}&nbsp;名称: {{ good.name }}&nbsp;价格: {{ good.price }}元&nbsp;销量: {{ good.sales }}&nbsp;
+                    <form action="/store/delete_good/{{ good.id }}" method="post">
+                            <input type="hidden" name="store_id" value="{{ store.id }}">
+                            <input type="submit" value="删除">
+                    </form>
+                </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
