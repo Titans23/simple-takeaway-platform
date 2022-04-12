@@ -1,47 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>点餐中心</title>
-</head>
-<body>
-    <a href="http://127.0.0.1:5000/user/home_id={{ username }}">个人中心</a>
-    <h1 style="color: blue">点餐中心</h1>
-    <table>
-          <tr>
-            <th>图片</th>
-            <th>名称</th>
-            <th>价格</th>
-            <th>商店</th>
-            <th>销量</th>
-          </tr>
-          {% for stus in stus %}
-          <tr>
-            <td><img src="http://127.0.0.1:5000/store/manage_goods/image/{{ stus.id }}" alt="餐品图片" class="now_user_pic" width="100px" height="100px"></td>
-            <td>{{ stus.name }}</td>
-            <td>{{ stus.price }}</td>
-            <td>{{ stus.store_id }}</td>
-            <td>{{ stus.sales }}</td>
-            <td>
-                <a href="{{ url_for('user.good_detail',good_id=stus.id,username=username) }}">点 餐</a>
-            </td>
-          </tr>
-          {% endfor %}
-    </table>
-    {#如果存在上一页#}
-    {% if paginate.has_prev %}
-        <a href="{{ url_for('user.user_order',username=username,page=paginate.prev_num) }}" >上一页:</a>
-    {% endif %}
-
-     {%  for i in  paginate.iter_pages() %}
-        <a href="{{ url_for('user.user_order',username=username,page= i) }}" >{{ i }}</a>
-     {% endfor %}
-
-    {#如果存在下一页#}
-    {% if paginate.has_next %}
-         <a href="{{ url_for('user.user_order',username=username,page=paginate.next_num) }}">下一页:</a>
-    {% endif %}
+{% extends "base.html" %}
+{% block title %}我的订单{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <h1>我的订单:</h1>
     <br>
+    <ul>
+    <table class="table">
+				<thead>
+					<tr>
+                        <th>
+							商品名称
+						</th>
+						<th>
+                            价格
+						</th>
+						<th>
+							状态
+						</th>
+						<th>
+							点餐时间
+						</th>
+                        <th>
+							打赏
+						</th>
+                        <th>
+                            举报
+                        </th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for order in stus | sort(attribute='creat_time', reverse = True)%}
+                        <tr>
+                            <td>{{ order.name }}</td>
+                            <td>{{ order.price }}</td>
+                            <td>{{ order.state }}</td>
+                            <td>{{ order.creat_time }}</td>
+                            {% if order.reward_money %}
+                                <td>{{ order.reward_money }}元</td>
+                            {% else %}
+                                {% if order.state == "骑手已送达" %}
+                                <td>
+                                    <form action="{{ url_for("user.reward_rider",order_id=order.id) }}" method="post">
+                                        <input type="text" name="money" placeholder="输入打赏金额">元
+                                        <input type="submit" value="打 赏">
+                                    </form>
+                                </td>
+                                {% else %}
+                                    <td>请订单结束后再打赏</td>
+                                {% endif %}
+                            {% endif %}
+                            {% if order.report_state == "已举报" %}
+                                <td>
+                                    {{ order.report_state }}
+                                </td>
+                            {% elif order.state !="骑手已送达" %}
+                                <td>
+                                    请订单结束后再举报
+                                </td>
+                            {% elif order.report_state == "举报成功" %}
+                                <td>
+                                    {{ order.report_state }}
+                                </td>
+                            {% elif order.report_state == "举报失败" %}
+                                <td>
+                                    {{ order.report_state }}
+                                </td>
+                            {% elif order.report_state == "骑手申诉" %}
+                                <td>
+                                    {{ order.report_state }}
+                                </td>
+                            {% else %}
+                                <td>
+                                    <form action="{{ url_for("user.report_rider",order_id=order.id) }}" method="post">
+                                        <input type="text" name="content" placeholder="输入举报内容">
+                                        <input type="submit" value="提 交">
+                                    </form>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+        </ul>
+        <ul class="pagination" style="text-align: center">
+            {% if paginate.has_prev %}
+                <li><a href="{{ url_for('user.user_order',page=paginate.prev_num) }}" >上一页:</a></li>
+            {% endif %}
 
-</body>
-</html>
+             {%  for i in  paginate.iter_pages() %}
+               <li> <a href="{{ url_for('user.user_order',page= i) }}" >{{ i }}</a></li>
+             {% endfor %}
+
+            {#如果存在下一页#}
+            {% if paginate.has_next %}
+                 <li><a href="{{ url_for('user.user_order',page=paginate.next_num) }}">下一页:</a></li>
+            {% endif %}
+        </ul>
+        </div>
+	</div>
+</div>
+
+
+{% endblock body %}

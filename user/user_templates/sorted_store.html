@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ chinese_type }}{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <h1>{{ chinese_type }}</h1>
+            <ul>
+            <table class="table">
+				<thead>
+					<tr>
+                        <th>
+							店铺图片
+						</th>
+						<th>
+							名称
+						</th>
+						<th>
+							地址
+						</th>
+                        <th>
+							链接
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for store in stus %}
+                        <tr>
+                            <td><img src="{{ url_for("store.get_pic",username=store.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                            <td>{{ store.name }}</td>
+                            <td>{{ store.address }}</td>
+                            <td><a href="{{ url_for("store.get_store_detail",id=store.id,page=1) }}">进入店铺</a></td>
+                        </tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+
+    </ul>
+        <ul class="pagination" style="text-align: center">
+            {% if paginate.has_prev %}
+                <li><a href="{{ url_for('user.get_sort_store',page=paginate.prev_num,type=type) }}" >上一页:</a></li>
+            {% endif %}
+
+             {%  for i in  paginate.iter_pages() %}
+               <li> <a href="{{ url_for('user.get_sort_store',page= i,type=type) }}" >{{ i }}</a></li>
+             {% endfor %}
+
+            {#如果存在下一页#}
+            {% if paginate.has_next %}
+                 <li><a href="{{ url_for('user.get_sort_store',page=paginate.next_num,type=type) }}">下一页:</a></li>
+            {% endif %}
+        </ul>
+        </div>
+	</div>
+</div>
+
+
+
+
+{% endblock body %}

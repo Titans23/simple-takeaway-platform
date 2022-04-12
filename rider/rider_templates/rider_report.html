@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的举报</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("rider.rider_home",username=rider.id) }}">骑手中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("rider.get_orders",id=rider.id,page=1) }}">接单大厅</a></li>
+                                <li class="dropdown"><a href="{{ url_for("rider.rider_report",rider_id=rider.id,page=1) }}">我的举报</a></li>
+                                <li class="dropdown"><a href="#">你好,ID为{{ rider.id }}的骑手</a></li>
+                                <li class="dropdown"><a href="http://127.0.0.1:5000/rider_login">退出</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+    <h3>我的举报</h3>
+        {#如果存在上一页#}
+    <table class="table">
+        <thead>
+          <tr>
+            <th>订单号</th>
+            <th>举报内容</th>
+            <th>目前状态</th>
+            <th>申诉</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for report in stus %}
+          <tr>
+            <td>{{ report.order_id }}</td>
+            <td>{{ report.content }}</td>
+            <td>{{ report.judge }}</td>
+              {% if report.judge == "举报成功" %}
+                <td>
+                    <form action="{{ url_for('rider.rider_appeal',rider_id=rider.id) }}" method="post">
+                        <input type="hidden" name="report_id" value="{{ report.id }}">
+                        <input type="submit" name="get" value="申 诉">
+                    </form>
+                </td>
+              {% else %}
+                  <td>暂时无法申诉</td>
+              {% endif %}
+
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+{#如果存在上一页#}
+            <ul class="pagination" style="text-align: center">
+                {% if paginate.has_prev %}
+                    <li><a href="{{ url_for('rider.rider_report',rider_id=rider.id,page=paginate.prev_num) }}">上一页:</a></li>
+                {% endif %}
+
+                 {%  for i in  paginate.iter_pages() %}
+                    <li><a href="{{ url_for('rider.rider_report',rider_id=rider.id,page=i) }}">{{ i }}</a></li>
+                 {% endfor %}
+                {#如果存在下一页#}
+                {% if paginate.has_next %}
+                     <li><a href="{{ url_for('rider.rider_report',rider_id=rider.id,page=paginate.next_num) }}">下一页:</a></li>
+                {% endif %}
+            </ul>
+    </div>
+        </div>
+    </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+</body>
+</html>

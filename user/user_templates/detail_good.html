@@ -1,24 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ good.name }}</title>
-</head>
-<body>
-    <a href="{{ url_for('user.user_order',username=user.id,page=1) }}">点餐中心</a>
+{% extends "base.html" %}
+{% block title %}主页{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <a href="{{ url_for("store.get_store_detail",id=good.store_id,page=1) }}"><p style="color: green">返回店铺</p></a>
     <br>
-    <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ good.id }}" alt="餐品图片" class="now_user_pic" width="400px" height="300px">
-    <table>
-        <tr>
-            <th>名称</th>
-            <th>价格</th>
-            <th>商店</th>
-            <th>销量</th>
-        </tr>
-        <tr>
+		<div class="col-md-6 column">
+            <div style="margin: 0 auto">
+                <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ good.id }}" alt="餐品图片" class="now_user_pic" width="450px" height="450px" align="middle">
+            </div>
+		</div>
+		<div class="col-md-6 column">
+            <h3>商品描述:</h3><br>
+            <p style="font-size: 20px">{{ good.detail }}</p>
+		</div>
+            <br>
+
+{#    <table>#}
+{#        <tr>#}
+{#            <th>名称</th>#}
+{#            <th>价格</th>#}
+{#            <th>销量</th>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>{{ good.name }}</td>#}
+{#            <td>{{ good.price }}元</td>#}
+{#            <td>{{ good.sales }}</td>#}
+{#        </tr>#}
+{#        <br>#}
+{#        <tr>#}
+{#            <td>#}
+{#                <form action="http://127.0.0.1:5000/order" method="post">#}
+{#                            <input type="hidden" name="username" value="{{ user.id }}">#}
+{#                            <input type="hidden" name="name" value="{{ good.name }}">#}
+{#                            <input type="hidden" name="price" value="{{ good.price }}">#}
+{#                            <input type="hidden" name="store_id" value="{{ good.store_id }}">#}
+{#                                <br>#}
+{#                                <br>    #}
+{#                            <input type="submit" name="get" value="下 单">#}
+{#                </form>#}
+{#            </td>#}
+{#        </tr>#}
+{#    </table>#}
+        <table class="table">
+				<thead>
+					<tr>
+						<th>
+							名称
+						</th>
+						<th>
+							价格
+						</th>
+						<th>
+							销量
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					        <tr>
             <td>{{ good.name }}</td>
             <td>{{ good.price }}元</td>
-            <td>{{ good.store_id }}</td>
             <td>{{ good.sales }}</td>
         </tr>
         <br>
@@ -29,20 +72,16 @@
                             <input type="hidden" name="name" value="{{ good.name }}">
                             <input type="hidden" name="price" value="{{ good.price }}">
                             <input type="hidden" name="store_id" value="{{ good.store_id }}">
+                                <br>
                             <input type="submit" name="get" value="下 单">
                 </form>
             </td>
         </tr>
-    </table>
-
+				</tbody>
+			</table>
+            <br>
+            <br>
     <ul>
-    {% for comment in good.comments %}
-            <li>
-                <img src="http://127.0.0.1:5000/user/image/{{ comment.user_id }}" alt="用户头像" class="now_user_pic" width="60px" height="60px">
-                {{ comment.nick_name }}         {{  comment.comment }}
-            </li>
-    {% endfor %}
-    </ul>
 
     <h3>评论区</h3>
         <form action="http://127.0.0.1:5000/add_comments" method="post">
@@ -51,9 +90,22 @@
                 <textarea cols="60" rows="3" name="comment">  评论时注意文明用语。
                 </textarea>
             </label>
+            <br>
             <input type="submit" value="提 交">
             <input type="hidden" name="good_id" value="{{ good.id }}">
             <input type="hidden" name="username" value="{{ user.id }}">
         </form>
-</body>
-</html>
+        <br>
+    {% for comment in good.comments %}
+            <li>
+                <img src="http://127.0.0.1:5000/user/image/{{ comment.user_id }}" alt="用户头像" class="now_user_pic" width="60px" height="60px">
+                {{ comment.nick_name }}  :       {{  comment.comment }}
+            </li>
+        <br>
+    {% endfor %}
+    </ul>
+
+        </div>
+	</div>
+</div>
+{% endblock body %}

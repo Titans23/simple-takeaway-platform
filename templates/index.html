@@ -1,23 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>丑团外卖</title>
-    <style type="text/css">
-        .option{
-            font-size: 60px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-        <div style="color: gray;font-size: 20px;height: 50px;width: 1000px;">欢迎来到丑团外卖!</div>
-        <div style="color: brown;text-align: center;font-size: 60px">登录中心</div>
-        <p>请选择你的角色</p>
-        <ul>
-            <li class="option"><a href="/user_login">用户</a> <br></li>
-            <li class="option"><a href="/store_login">商家</a> <br></li>
-            <li class="option"><a href="/rider_login">骑手</a> <br></li>
+{% extends "base.html" %}
+{% block title %}主页{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+{#{% for store in stores %}#}
+{#    {{ store.name }}#}
+{#    {{ url_for("store.get_pic",username=store.id) }}#}
+{#{% endfor %}#}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+<h1>店铺:</h1>
+    <br>
+    <ul>
+{#        {% for store in stus  %}#}
+{#                <li>#}
+{#                    <img src="{{ url_for("store.get_pic",username=store.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px">#}
+{#                    <span>名称: {{ store.name }}&nbsp;</span>#}
+{##}
+{#                    <span>地址: {{ store.address }}  &nbsp;销量: 0</span>#}
+{#                    &nbsp;&nbsp;&nbsp;#}
+{#                    <a href="#">进入店铺</a>#}
+{#                </li>#}
+{#                <br>#}
+{##}
+{#        {% endfor %}#}
+        <table class="table">
+				<thead>
+					<tr>
+                        <th>
+							店铺图片
+						</th>
+						<th>
+							名称
+						</th>
+						<th>
+							地址
+						</th>
+						<th>
+							销量
+						</th>
+                        <th>
+							链接
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for store in stus %}
+                        <tr>
+                            <td><img src="{{ url_for("store.get_pic",username=store.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                            <td>({{ store.type }}) {{ store.name }}</td>
+                            <td>{{ store.address }}</td>
+                            <td>{{ store.sales }}</td>
+                            <td><a href="{{ url_for("store.get_store_detail",id=store.id,page=1) }}">进入店铺</a></td>
+                        </tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+    </ul>
+    {#如果存在上一页#}
+        <ul class="pagination" style="text-align: center">
+            {% if paginate.has_prev %}
+                <li><a href="{{ url_for('user.index',page=paginate.prev_num) }}" >上一页:</a></li>
+            {% endif %}
+
+             {%  for i in  paginate.iter_pages() %}
+               <li> <a href="{{ url_for('user.index',page= i) }}" >{{ i }}</a></li>
+             {% endfor %}
+
+            {#如果存在下一页#}
+            {% if paginate.has_next %}
+                 <li><a href="{{ url_for('user.index',page=paginate.next_num) }}">下一页:</a></li>
+            {% endif %}
         </ul>
-</body>
-</html>
+        </div>
+	</div>
+</div>
+{% endblock body %}

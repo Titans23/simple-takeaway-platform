@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}搜索:{{ key_words }}{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+        <h2>搜索到的商店:</h2>
+            <table class="table">
+				<thead>
+					<tr>
+                        <th>
+							店铺图片
+						</th>
+						<th>
+							名称
+						</th>
+						<th>
+							地址
+						</th>
+						<th>
+							销量
+						</th>
+                        <th>
+							链接
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for store in stores %}
+                        <tr>
+                            <td><img src="{{ url_for("store.get_pic",username=store.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                            <td>({{ store.type }}) {{ store.name }}</td>
+                            <td>{{ store.address }}</td>
+                            <td>{{ store.sales }}</td>
+                            <td><a href="{{ url_for("store.get_store_detail",id=store.id,page=1) }}">进入店铺</a></td>
+                        </tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+            <br>
+        <h2>搜索到的菜品</h2>
+            <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                商品图片
+                            </th>
+                            <th>
+                                名称
+                            </th>
+                            <th>
+                                价格
+                            </th>
+                            <th>
+                                销量
+                            </th>
+                            <th>
+                                链接
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for good in goods %}
+                            <tr>
+                                <td><img src="{{ url_for("store.get_image",username=good.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                                <td>{{ good.name }}</td>
+                                <td>{{ good.price }}</td>
+                                <td>{{ good.sales }}</td>
+                                {% if current_user.id  %}
+                                <td><a href="{{ url_for('user.good_detail',good_id=good.id,username=current_user.id)}}">详情进入</a></td>
+                                {% else %}
+                                    <td><a href="{{ url_for('user.user_login')}}">登录后才能查看详情哦</a></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+	</div>
+</div>
+{% endblock body %}

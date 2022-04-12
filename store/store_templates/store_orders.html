@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+</head>
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for("store.store_home",username=store.id) }}">商家中心</a>
+            </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown"><a href="{{ url_for('store.manage_goods',id=store.id) }}">商品管理</a></li>
+                        <li class="dropdown"><a href="{{ url_for("store.store_orders",store_id=store.id,page=1) }}">我的订单</a></li>
+                        <li class="dropdown" style="color: red"><a href="#">你好,ID为{{ store.id }}的商家</a></li>
+                        <li class="dropdown"><a href="http://127.0.0.1:5000/store_login">退出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <h3>我的订单</h3>
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>时间</th>
+                <th>订单状态</th>
+                <th>#</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in stus | sort(attribute='creat_time', reverse = True) %}
+              <tr>
+                <td>{{ order.name }}</td>
+                <td>{{ order.price }}</td>
+                <td>{{ order.creat_time }}</td>
+                <td>{{ order.state }}</td>
+                <td>
+                    {% if order.state == '未接手' %}
+                    <form action="/store/home_id={{order.id}}" method="post">
+                            <input type="submit" value="接 手">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                    </form>
+                    {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+
+        <ul class="pagination" style="text-align: center">
+                {% if paginate.has_prev %}
+                    <li><a href="{{ url_for('store.store_orders',store_id=store.id,page=paginate.prev_num) }}">上一页:</a></li>
+                {% endif %}
+
+                 {%  for i in  paginate.iter_pages() %}
+                    <li><a href="{{ url_for('store.store_orders',store_id=store.id,page=i) }}">{{ i }}</a></li>
+                 {% endfor %}
+                {#如果存在下一页#}
+                {% if paginate.has_next %}
+                     <li><a href="{{ url_for('store.store_orders',store_id=store.id,page=paginate.next_num) }}">下一页:</a></li>
+                {% endif %}
+        </ul>
+
+            </div>
+        </div>
+    </div>
+    <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+</body>
+</html>

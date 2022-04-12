@@ -3,29 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>骑手中心</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
 </head>
 <body>
-        <a href="http://127.0.0.1:5000/rider_login">退出</a>
-        <h3>你好,ID为{{ rider.id }}的骑手</h3>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("rider.rider_home",username=rider.id) }}">骑手中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("rider.get_orders",id=rider.id,page=1) }}">接单大厅</a></li>
+                                <li class="dropdown"><a href="{{ url_for("rider.rider_report",rider_id=rider.id,page=1) }}">我的举报</a></li>
+                                <li class="dropdown" style="color: red"><a href="#">你好,ID为{{ rider.id }}的骑手</a></li>
+                                <li class="dropdown"><a href="http://127.0.0.1:5000/rider_login">退出</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
 
         <h3 style="color: red">余额: {{ rider.money }} 元</h3>
-        <a href="{{ url_for('rider.get_orders',id=rider.id,page=1) }}">接单大厅</a>
         <h3>我的订单</h3>
         <ul>
-            {% for order in rider.orders | sort(attribute='creat_time', reverse = True) %}
-                <li>
-                    {{ order.name }} 价格:{{ order.price }}元 {{ order.state }} 点餐时间:{{ order.creat_time }}
-                    店家地址 : {{ order.store_address }}  用户地址 : {{ order.user_address }}
-                    {% if order.state == '骑手已接手' %}
-                    <form action="/rider/home_id={{ rider.id }}" method="post">
-                        <input type="hidden" name="order_id" value="{{ order.id }}">
-                        <input type="hidden" name="rider_id" value="{{ rider.id }}">
-                        <input type="submit" name="over" value="送 达">
-                    </form>
-                {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th>商品名称</th>
+                    <th>订单佣金(元)</th>
+                    <th>点餐时间</th>
+                    <th>商家地址</th>
+                    <th>用户地址</th>
+                    <th>#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in rider.orders | sort(attribute='creat_time', reverse = True) %}
+                  <tr>
+                        <td>{{ order.name }}</td>
+                        <td>{{ order.money }}</td>
+                        <td>{{ order.creat_time }}</td>
+                        <td>{{ order.store_address }}</td>
+                        <td>{{ order.user_address }}</td>
+                        <td>
+                            {% if order.state == '骑手已接手' %}
+                                <form action="{{ url_for("rider.rider_home",username=rider.id) }}" method="post">
+                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                    <input type="hidden" name="rider_id" value="{{ rider.id }}">
+                                    <input type="submit" name="over" value="送 达">
+                                </form>
+                            {% endif %}
+                        </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+    </div>
+        </div>
+    </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
 </body>
 </html>

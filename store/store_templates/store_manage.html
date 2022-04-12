@@ -3,33 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <title>商品管理</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
 </head>
 <body>
-    <a href="http://127.0.0.1:5000/store/home_id={{ store.id }}">商家中心</a>
-    <h1>新增商品</h1>
-    <form action="/store/manage_goods/{{store.id}}" method="post" enctype="multipart/form-data">
-        名称 : <input type="text" name="name"><br>
-        价格 : <input type="text" name="price"><br>
-        <div class="form-group">
-                <label>上传图片：</label>
-                <input id="file" type="file" name="file" class="input_file">
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for("store.store_home",username=store.id) }}">商家中心</a>
+            </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown"><a href="{{ url_for('store.manage_goods',id=store.id) }}">商品管理</a></li>
+                        <li class="dropdown"><a href="{{ url_for("store.store_orders",store_id=store.id,page=1) }}">我的订单</a></li>
+                        <li class="dropdown" style="color: red"><a href="#">你好,ID为{{ store.id }}的商家</a></li>
+                        <li class="dropdown"><a href="http://127.0.0.1:5000/store_login">退出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    <div class="container">
+	    <div class="row clearfix">
+		    <div class="col-md-6 column">
+                <h1>新增商品</h1>
+                <form action="/store/manage_goods/{{store.id}}" method="post" enctype="multipart/form-data">
+                    名称 : <input type="text" name="name"><br><br>
+                    价格 : <input type="text" name="price"><br><br>
+                    <label for="detail">描述 : </label>
+                    <textarea name="detail" id="detail" cols="20" rows="5"></textarea><br>
+                    <div class="form-group">
+                            <label>上传图片：</label>
+                            <input id="file" type="file" name="file" class="input_file">
+                    </div>
+                    <input type="submit" value="上 架">
+                </form>
+            </div>
+    <div class="col-md-6 column">
+        <h1>所有商品:</h1>
+        <ul>
+            {% if recommand_good %}
+            <h2>本店推荐:</h2>
+                <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ recommand_good.id }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px">
+                        编号: {{ recommand_good.id }}&nbsp;名称: {{ recommand_good.name }}&nbsp;价格: {{ recommand_good.price }}元&nbsp;销量: {{ recommand_good.sales }}&nbsp;
+
+            <h2>其他商品:</h2>
+            {% endif %}
+            {% for good in store.goods  %}
+                    <li>
+                        <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ good.id }}" alt="餐品图片" class="now_user_pic" width="100px" height="100px">
+                        编号: {{ good.id }}&nbsp;名称: {{ good.name }}&nbsp;价格: {{ good.price }}元&nbsp;销量: {{ good.sales }}&nbsp;
+                        <form action="/store/delete_good/{{ good.id }}" method="post">
+                                <input type="hidden" name="store_id" value="{{ store.id }}">
+                                <input type="submit" value="删除" name="delete">
+                                <input type="submit" value="设置为本店推荐" name="recommand">
+                        </form>
+                    </li>
+            {% endfor %}
+        </ul>
+            </div>
+            </div>
         </div>
-        <input type="submit" value="上 架">
-    </form>
-
-
-    <h1>所有商品:</h1>
-    <ul>
-        {% for good in store.goods  %}
-                <li>
-                    <img src="http://127.0.0.1:5000/store/manage_goods/image/{{ good.id }}" alt="餐品图片" class="now_user_pic" width="100px" height="100px">
-                    编号: {{ good.id }}&nbsp;名称: {{ good.name }}&nbsp;价格: {{ good.price }}元&nbsp;销量: {{ good.sales }}&nbsp;
-                    <form action="/store/delete_good/{{ good.id }}" method="post">
-                            <input type="hidden" name="store_id" value="{{ store.id }}">
-                            <input type="submit" value="删除">
-                    </form>
-                </li>
-        {% endfor %}
-    </ul>
+    </div>
+        </div>
+    </div>
+    <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
 </body>
 </html>

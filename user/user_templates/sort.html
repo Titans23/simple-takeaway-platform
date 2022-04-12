@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}分类{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-6 column">
+            <div style="text-align: center">
+                <form action="{{ url_for("user.get_sort_store",type="take_out",page=1) }}" method="get">
+                    <p>
+                        <input type="image" src="{{ url_for("user.get_image",page=1,username="take_out") }}" alt="take_out" width="200px" height="300px">
+                    </p>
+                </form>
+            </div>
+            <div style="text-align: center">
+                <form action="{{ url_for("user.get_sort_store",type="fruit",page=1) }}" method="get">
+                    <p>
+                        <input type="image" src="{{ url_for("user.get_image",username="fruit") }}" alt="fruit" width="200px" height="300px">
+                    </p>
+                </form>
+            </div>
+		</div>
+		<div class="col-md-6 column">
+            <div style="text-align: center">
+                <form action="{{ url_for("user.get_sort_store",type="super",page=1) }}" method="get">
+                    <p>
+                        <input type="image" src="{{ url_for("user.get_image",username="super") }}" alt="super" width="200px" height="300px">
+                    </p>
+                </form>
+            </div>
+            <div style="text-align: center">
+                <form action="{{ url_for("user.get_sort_store",type="dessert_drinks",page=1) }}" method="get">
+                    <p>
+                        <input type="image" src="{{ url_for("user.get_image",username="dessert_drinks") }}" alt="dessert_drinks" width="200px" height="300px">
+                    </p>
+                </form>
+            </div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock body %}

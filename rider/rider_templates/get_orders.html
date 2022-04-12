@@ -2,19 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <a href="http://127.0.0.1:5000/rider/home_id={{ rider.id }}">骑手中心</a>
     <title>接单大厅</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("rider.rider_home",username=rider.id) }}">骑手中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("rider.get_orders",id=rider.id,page=1) }}">接单大厅</a></li>
+                                <li class="dropdown"><a href="{{ url_for("rider.rider_report",rider_id=rider.id,page=1) }}">我的举报</a></li>
+                                <li class="dropdown"><a href="#">你好,ID为{{ rider.id }}的骑手</a></li>
+                                <li class="dropdown"><a href="http://127.0.0.1:5000/rider_login">退出</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
     <h3>接单大厅</h3>
         {#如果存在上一页#}
-    <table>
+    <table class="table">
+        <thead>
           <tr>
             <th>名称</th>
             <th>商家地址</th>
             <th>用户地址</th>
             <th>佣金(元)</th>
           </tr>
+        </thead>
+        <tbody>
           {% for stus in stus %}
           <tr>
             <td>{{ stus.name }}</td>
@@ -29,19 +67,25 @@
             </td>
           </tr>
           {% endfor %}
+        </tbody>
     </table>
 {#如果存在上一页#}
-    {% if paginate.has_prev %}
-        <a href="{{ url_for('rider.get_orders',id=rider.id,page=paginate.prev_num) }}">上一页:</a>
-    {% endif %}
+            <ul class="pagination" style="text-align: center">
+                {% if paginate.has_prev %}
+                    <li><a href="{{ url_for('rider.get_orders',id=rider.id,page=paginate.prev_num) }}">上一页:</a></li>
+                {% endif %}
 
-     {%  for i in  paginate.iter_pages() %}
-        <a href="{{ url_for('rider.get_orders',id=rider.id,page=i) }}">{{ i }}</a>
-     {% endfor %}
-    {#如果存在下一页#}
-    {% if paginate.has_next %}
-         <a href="{{ url_for('rider.get_orders',id=rider.id,page=paginate.next_num) }}">下一页:</a>
-    {% endif %}
-
+                 {%  for i in  paginate.iter_pages() %}
+                    <li><a href="{{ url_for('rider.get_orders',id=rider.id,page=i) }}">{{ i }}</a></li>
+                 {% endfor %}
+                {#如果存在下一页#}
+                {% if paginate.has_next %}
+                     <li><a href="{{ url_for('rider.get_orders',id=rider.id,page=paginate.next_num) }}">下一页:</a></li>
+                {% endif %}
+            </ul>
+    </div>
+        </div>
+    </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
 </body>
 </html>

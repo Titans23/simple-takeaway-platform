@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}用户中心{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <h2>添加好友:</h2>
+            <br>
+
+            <form class="form-horizontal" action="#" method="post">
+                <label>
+                    输入对方用户名:
+                    <input type="text" name="username2">
+                </label>
+                <br>
+                <br>
+                <input type="submit" value="查询">
+            </form>
+            <br>
+            {% if state == "查询到" %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                头像
+                            </th>
+                            <th>
+                                User_ID
+                            </th>
+                            <th>
+                                Nick_Name
+                            </th>
+                            <th>
+                                添加好友
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td><img src="{{ url_for("user.get_image",username=search_.id) }}" alt="头像" width="50px" height="50px"></td>
+                                <td>{{ search_.id }}</td>
+                                <td>{{ search_.nick_name }}</td>
+                                <td><a href="{{ url_for("user.apply_friend",user_id2=search_.id) }}">申请</a></td>
+                            </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                {{ state }}
+            {% endif %}
+            <div style="text-align: center">
+                {% for message in get_flashed_messages() %}
+                    <span style="color: red;">{{ message }}</span>
+                {% endfor %}
+            </div>
+        </div>
+	</div>
+</div>
+{% endblock body %}

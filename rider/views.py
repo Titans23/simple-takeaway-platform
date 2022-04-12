@@ -3,7 +3,7 @@ import time
 
 from rider import rider_blue
 from flask import render_template, request, flash, url_for, redirect, session,current_app
-from modules import User, db, Goods,Riders, Orders
+from modules import User, db, Goods,Riders, Orders ,Report
 import random
 import hashlib
 # md5加密
@@ -17,7 +17,7 @@ def USE_MD5(test):
 def session_judge(username):
     get_key = session.get('key')
     rider = Riders.query.filter(Riders.id == username).first()
-    param = str(username) + str(rider.password)
+    param = str(username) + str(rider.password_hash)
     key = USE_MD5(param)
     if key != get_key:
         return True
@@ -44,10 +44,10 @@ def rider_login():
                 # 判断数据库中是否存在user
                 if rider:
                     # 判断密码是否正确
-                    if rider.password != password:
+                    if not rider.check_password(password):
                         flash("密码错误")
                     else:
-                        param = str(username)+str(password)
+                        param = str(username)+str(rider.password_hash)
                         key = USE_MD5(param)
                         session['key'] = key
                         return redirect(f"/rider/home_id={username}")
@@ -63,7 +63,8 @@ def rider_login():
                 if rider:
                     flash("该账号已存在")
                 else:
-                    rider = Riders(id=username,password=password,money=0)
+                    rider = Riders(id=username,money=0)
+                    rider.set_password(password)
                     db.session.add(rider)
                     db.session.commit()
                     flash("注册成功")
@@ -81,6 +82,7 @@ def rider_home(username):
         order.over_time = time.strftime("%H:%M:%S", time.localtime())
         rider = Riders.query.filter(Riders.id == username).first()
         rider.money = rider.money + float(order.money)
+        # print(order.money)
         db.session.commit()
     rider = Riders.query.filter(Riders.id == username).first()
     if session_judge(username):
@@ -101,15 +103,28 @@ def get_orders(id,page):
     if not page:
         page = 1
     # 从数据库查询数据
-    paginates = Orders.query.filter(Orders.state == '商家已接手').paginate(page, 3, error_out=False)
+    paginates = Orders.query.filter(Orders.state == '商家已接手').paginate(page, 6, error_out=False)
     stus = paginates.items
     # totalpage为总页面数
     totalpage = math.ceil(paginates.total / 2)
     return render_template('get_orders.html', paginate=paginates, stus=stus, totalpage=totalpage,rider=rider)
 
+@rider_blue.route('/rider/rider_report?rider_id=<int:rider_id>&page=<int:page>',methods=['GET','POST'])
+def rider_report(rider_id,page):
+    rider = Riders.query.filter(Riders.id == rider_id).first()
+    paginates = Report.query.filter(Report.rider_id == rider.id).paginate(page,6,error_out=False)
+    stus = paginates.items
+    totalpage = math.ceil(paginates.total / 2)
+    return render_template('rider_report.html', paginate=paginates, stus=stus, totalpage=totalpage,rider=rider)
 
-    # return render_template('get_orders.html',orders=orders,rider=rider)
-
-
+@rider_blue.route('/rider/rider_appeal/rider_id=<int:rider_id>',methods=['POST'])
+def rider_appeal(rider_id):
+    report_id = request.form.get('report_id')
+    report = Report.query.filter(Report.id == report_id).first()
+    order = Orders.query.filter(Orders.id == report.order_id).first()
+    order.report_state = "骑手申诉"
+    report.judge = "骑手申诉"
+    db.session.commit()
+    return redirect(url_for("rider.rider_report",rider_id=rider_id,page=1))
 
 

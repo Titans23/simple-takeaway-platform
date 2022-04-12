@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("user.admin") }}">审核中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("user.change_conditions") }}">管理敏感词句</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.manage_report",page=1) }}">审核用户举报</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.admin_search") }}">查询数据</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <h2>增加敏感词句:</h2>
+                <form action="{{ url_for("user.change_conditions") }}" method="post">
+                    <input type="text" name="content">
+                    <input type="submit" name="add" value="增加">
+                </form>
+                <h2>敏感词句:</h2>
+                <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Condition_ID
+                                </th>
+                                <th>
+                                    Content
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for condition in conditions %}
+                                <tr>
+                                    <td>{{ condition.id }}</td>
+                                    <td>{{ condition.content }}</td>
+                                    <td>
+                                        <form action="{{ url_for("user.change_conditions") }}" method="post">
+                                            <input type="submit" value="删除" name="delete">
+                                            <input type="hidden" name="condition_id" value="{{ condition.id }}">
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+    </body>
+</html>

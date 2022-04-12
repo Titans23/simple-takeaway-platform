@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ store.name }}{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <span>
+                <h1 style="display: inline">欢迎来到{{ store.name }}的店铺!</h1>
+                {% if collect.id %}
+                    <form action="{{ url_for("user.cancel_collect",store_id=store.id,type="store") }}" method="post">
+                        <p style="display: inline">
+                            <input type="image" src="{{ url_for("store.get_image",username="collected") }}" alt="collected">
+                        </p>
+                        <p style="display: inline;color: green;">
+                            收藏人数:{{ store.collect_p }}
+                        </p>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for("user.collect_store",store_id=store.id) }}" method="post">
+                        <p style="display: inline">
+                            <input type="image" src="{{ url_for("store.get_image",username="tocollect") }}" alt="tocollect">
+                        </p>
+                        <p style="display: inline;color: green;">
+                            收藏人数:{{ store.collect_p }}
+                        </p>
+                    </form>
+                {% endif %}
+            </span>
+            <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                商品图片
+                            </th>
+                            <th>
+                                名称
+                            </th>
+                            <th>
+                                价格
+                            </th>
+                            <th>
+                                销量
+                            </th>
+                            <th>
+                                链接
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        {% if recommand_good %}
+                            <td><img src="{{ url_for("store.get_image",username=recommand_good.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                            <td style="color: red">(商家推荐){{ recommand_good.name }}</td>
+                            <td style="color: red">{{ recommand_good.price }}</td>
+                            <td style="color: red">{{ recommand_good.sales }}</td>
+                            {% if current_user.id  %}
+                            <td><a href="{{ url_for('user.good_detail',good_id=recommand_good.id,username=current_user.id)}}">详情进入</a></td>
+                            {% else %}
+                                <td><a href="{{ url_for('user.user_login')}}">登录后才能查看详情哦</a></td>
+                            {% endif %}
+                        {% endif %}
+                        </tr>
+                        {% for good in stus %}
+                            <tr>
+                                <td><img src="{{ url_for("store.get_image",username=good.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                                <td>{{ good.name }}</td>
+                                <td>{{ good.price }}</td>
+                                <td>{{ good.sales }}</td>
+                                {% if current_user.id  %}
+                                <td><a href="{{ url_for('user.good_detail',good_id=good.id,username=current_user.id)}}">详情进入</a></td>
+                                {% else %}
+                                    <td><a href="{{ url_for('user.user_login')}}">登录后才能查看详情哦</a></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+         </ul>
+
+
+
+        <ul class="pagination" style="text-align: center">
+            {% if paginate.has_prev %}
+                <li><a href="{{ url_for('store.get_store_detail',page=paginate.prev_num,id=id) }}" >上一页:</a></li>
+            {% endif %}
+
+             {%  for i in  paginate.iter_pages() %}
+               <li> <a href="{{ url_for('store.get_store_detail',page= i,id=id) }}" >{{ i }}</a></li>
+             {% endfor %}
+
+            {#如果存在下一页#}
+            {% if paginate.has_next %}
+                 <li><a href="{{ url_for('store.get_store_detail',page=paginate.next_num,id=id) }}">下一页:</a></li>
+            {% endif %}
+        </ul>
+
+        </div>
+	</div>
+</div>
+
+{% endblock body %}

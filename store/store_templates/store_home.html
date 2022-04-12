@@ -3,49 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <title>商家中心</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
 </head>
 <body>
-        <a href="http://127.0.0.1:5000/store_login">退出</a>
-        <form action="/store/home_id={{store.id}}" method="post">
-        <h3>商家资料</h3>
-        <div class="form-group">
-            <div style="color: red">
-                商家 id : {{ store.id }}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for("store.store_home",username=store.id) }}">商家中心</a>
             </div>
-            <label>商家昵称：</label>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown"><a href="{{ url_for('store.manage_goods',id=store.id) }}">商品管理</a></li>
+                        <li class="dropdown"><a href="{{ url_for("store.store_orders",store_id=store.id,page=1) }}">我的订单</a></li>
+                        <li class="dropdown" style="color: red"><a href="#">你好,ID为{{ store.id }}的商家</a></li>
+                        <li class="dropdown"><a href="http://127.0.0.1:5000/store_login">退出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <form action="/store/home_id={{store.id}}" method="post" enctype="multipart/form-data">
+        <h2>商家资料:</h2>
+            <br>
+        <div class="form-group">
+        <div style="color: red">
+            商家 id : {{ store.id }}
+        </div>
+            <br>
+        <label>商家昵称：</label>
             <input id="name" type="text" name="name" class="input_txt" value="{{ store.name }}">
         </div>
+        <br>
         <div class="form-group">
             <label>店铺地址：</label>
             <input id="address" type="text" name="address" class="input_txt" value="{{ store.address }}">
         </div>
+        <br>
+        <div class="form-group">
+        <label >当前图像：</label>
+            <img src="{{ url_for("store.get_pic",username=store.id) }}" alt="用户图片" class="now_user_pic" width="100px" height="100px">
+        </div>
+        <br>
+        <div class="form-group">
+            <label>上传图像：</label>
+            <input id="file" type="file" name="file" class="input_file">
+        </div>
+        <br>
+            <label>选择商家标签:</label>
+            {% if store.type == "甜品饮品" %}
+                    <input type="radio" name="type" value="美食外卖"> <b>美食外卖</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="type" value="超市便利">  <b>超市便利</b>
+                    <input type="radio" name="type" value="水果">  <b>水果</b>
+                    <input type="radio" name="type" checked="checked" value="甜品饮品">  <b>甜品饮品</b>
+            {% elif store.type == "水果" %}
+                    <input type="radio" name="type" value="美食外卖"> <b>美食外卖</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="type" value="超市便利">  <b>超市便利</b>
+                    <input type="radio" name="type" checked="checked" value="水果">  <b>水果</b>
+                    <input type="radio" name="type" value="甜品饮品">  <b>甜品饮品</b>
+            {% elif store.type == "超市便利" %}
+                    <input type="radio" name="type" value="美食外卖"> <b>美食外卖</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="type" checked="checked" value="超市便利">  <b>超市便利</b>
+                    <input type="radio" name="type" value="水果">  <b>水果</b>
+                    <input type="radio" name="type" value="甜品饮品">  <b>甜品饮品</b>
+            {% else %}
+                <input type="radio" name="type" checked="checked" value="美食外卖"> <b>美食外卖</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="type" value="超市便利">  <b>超市便利</b>
+                <input type="radio" name="type" value="水果">  <b>水果</b>
+                <input type="radio" name="type" value="甜品饮品">  <b>甜品饮品</b>
+            {% endif %}
+        <br>
         <div class="form-group">
             <input type="submit" value="保 存" class="input_sub">
         </div>
+        <br>
             <div>
                 总余额 : {{ store.money }} 元
             </div>
     </form>
-        <h3>
-            <a href="{{ url_for('store.manage_goods',id=store.id) }}">商品管理</a>
-            <a href="http://127.0.0.1/"></a>
-        </h3>
-        <h3>我的订单</h3>
-        <ul>
-            {% for order in store.orders |sort(attribute='creat_time', reverse = True) %}
-                <li>
-                <span>
-                    {{ order.name }} 价格:{{ order.price }}元 时间:{{ order.creat_time }} {{ order.state }}
-                    {% if order.state == '未接手' %}
-                    <form action="/store/home_id={{store.id}}" method="post">
-                            <input type="submit" value="接 手">
-                            <input type="hidden" name="order_id" value="{{ order.id }}">
-                    </form>
-                    {% endif %}
-                </span>
-                </li>
-            {% endfor %}
-        </ul>
 
+            </div>
+        </div>
+    </div>
+    <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
 </body>
 </html>

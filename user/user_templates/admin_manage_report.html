@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage_Report</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("user.admin") }}">审核中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("user.change_conditions") }}">管理敏感词句</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.manage_report",page=1) }}">审核用户举报</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.admin_search") }}">查询数据</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <h2>处理用户举报:</h2>
+                <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Report_ID
+                                </th>
+                                <th>
+                                    User_ID
+                                </th>
+                                <th>
+                                    Rider_ID
+                                </th>
+                                <th>
+                                    Order_ID
+                                </th>
+                                <th>
+                                    Content
+                                </th>
+                                <th>
+                                    举报成功
+                                </th>
+                                <th>
+                                    举报失败
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in stus %}
+                                <tr>
+                                    <td>{{ report.id }}</td>
+                                    <td>{{ report.user_id }}</td>
+                                    <td>{{ report.rider_id }}</td>
+                                    <td>{{ report.order_id }}</td>
+                                    <td>{{ report.content }}</td>
+                                    <td>
+                                        <form action="{{ url_for("user.judge_report") }}" method="post">
+                                            <input type="submit" value="Yes" name="success">
+                                            <input type="hidden" name="report_id" value="{{ report.id }}">
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for("user.judge_report") }}" method="post">
+                                            <input type="submit" value="Yes" name="fail">
+                                            <input type="hidden" name="report_id" value="{{ report.id }}">
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+                <ul class="pagination" style="text-align: center">
+            {% if paginate.has_prev %}
+                <li><a href="{{ url_for('user.manage_report',page=paginate.prev_num) }}" >上一页:</a></li>
+            {% endif %}
+
+             {%  for i in  paginate.iter_pages() %}
+               <li> <a href="{{ url_for('user.manage_report',page= i) }}" >{{ i }}</a></li>
+             {% endfor %}
+
+            {#如果存在下一页#}
+            {% if paginate.has_next %}
+                 <li><a href="{{ url_for('user.manage_report',page=paginate.next_num) }}">下一页:</a></li>
+            {% endif %}
+        </ul>
+
+            </div>
+        </div>
+    </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+    </body>
+</html>

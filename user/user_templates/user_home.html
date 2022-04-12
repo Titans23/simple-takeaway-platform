@@ -1,34 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>用户中心</title>
-</head>
-<body>
-        <a href="http://127.0.0.1:5000/user_login">退出</a>
-
+{% extends "base.html" %}
+{% block title %}用户中心{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
         <form action="/user/home_id={{user.id}}" method="post" enctype="multipart/form-data">
-            <h3>基本资料</h3>
+            <h2>基本资料:</h2>
+            <br>
             <div class="form-group">
-                <label >当前图像：</label>
-                <img src="image/{{ user.id }}" alt="用户图片" class="now_user_pic" width="100px" height="100px">
-            </div>
-            <div class="form-group">
-                <label>上传图像：</label>
+                <label>更改头像：</label>
                 <input id="file" type="file" name="file" class="input_file">
             </div>
+            <br>
             <div class="form-group">
                 <label>个性签名：</label>
                 <input id="signature" type="text" name="signature" class="input_txt" value="{{ user.signature }}">
             </div>
+            <br>
             <div class="form-group">
                 <label>用户昵称：</label>
                 <input id="nick_name" type="text" name="nick_name" class="input_txt" value="{{ user.nick_name }}">
             </div>
+            <br>
             <div class="form-group">
                 <label>收货地址：</label>
                 <input id="address" type="text" name="address" class="input_txt" value="{{ user.address }}">
             </div>
+            <br>
+            <div class="form-group">
+                {% if user.tel %}
+                    <p style="font-weight: 700;">手机号码 : {{ user.tel }}</p>
+                {% else %}
+                    <p style="font-weight: 700"><a href="{{ url_for("user.bind_tel") }}">手机号码 : =>绑定你的手机号</a></p>
+                {% endif %}
+            </div>
+            <br>
             <div class="form-group">
                 <label>性别：</label>
                 {# 判断用户性别 #}
@@ -48,7 +55,10 @@
             </div>
 
             </form>
+        <br>
+
         <h3 style="color: red">余额: {{ user.money }} 元</h3>
+        <br>
         {% for message in get_flashed_messages() %}
             <span style="color: red;">{{ message }}</span>
         {% endfor %}
@@ -57,14 +67,7 @@
             <input type="text" name="add_money" placeholder="请输入充值金额" value="0">元
             <input type="submit" value="充 值">
         </form>
-        <br>
-        <a href="{{ url_for('user.user_order',username=user.id,page=1) }}">点餐中心</a>
-        <h3>我的订单</h3>
-        <ul>
-            {% for order in user.orders | sort(attribute='creat_time', reverse = True) %}
-                <li>{{ order.name }} 价格:{{ order.price }}元 {{ order.state }} 点餐时间:{{ order.creat_time }}</li>
-            {% endfor %}
-        </ul>
-
-</body>
-</html>
+        </div>
+	</div>
+</div>
+{% endblock body %}

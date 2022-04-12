@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ url_for("user.index",page=1) }}">首页</a>
+        </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown"><a href="{{ url_for("user.sort_store") }}">商品分类</a></li>
+                    <li><a href="#">活动中心</a></li>
+                    <li><a href="{{ url_for("user.user_order",page=1) }}">我的订单</a></li>
+                    <li><a href="{{ url_for("user.search_friend") }}">加好友</a></li>
+                    <li>
+                        <form class="navbar-form navbar-left" role="search" method="post" action="{{ url_for("user.search") }}">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="商品名称" name="key_words">
+                            </div>
+                                <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+
+                    </li>
+                    {% if current_user.id %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            {{ current_user.nick_name }}
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for("user.user_home",username=current_user.id) }}">个人中心</a></li>
+                            <li><a href="{{ url_for("user.get_collect_store") }}">我的收藏</a></li>
+                            <li><a href="{{ url_for("user.user_friends") }}">我的好友</a></li>
+                            <li><a href="{{ url_for("user.logout") }}">退出登录</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                        <li><a href="{{ url_for("user.user_login") }}">登录/注册</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% if current_user.id %}
+                <div class="navbar-header">
+                    <img src="{{ url_for("user.get_image",username=current_user.id) }}" alt="用户图片"  width="60px" height="60px">
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+    </div>
+	</div>
+</div>
+    <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+    {% block body %}{% endblock %}
+</body>
+</html>

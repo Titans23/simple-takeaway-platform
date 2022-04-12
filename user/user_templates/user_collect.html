@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}我的收藏{% endblock %}
+{% block head %}{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+            <h1>我的收藏:</h1>
+            <ul>
+            <table class="table">
+				<thead>
+					<tr>
+                        <th>
+							店铺图片
+						</th>
+						<th>
+							名称
+						</th>
+						<th>
+							地址
+						</th>
+                        <th>
+							链接
+						</th>
+                        <th>
+							*
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for store in stores %}
+                        <tr>
+                            <td><img src="{{ url_for("store.get_pic",username=store.id) }}" alt="餐品图片" class="now_user_pic" width="60px" height="60px"></td>
+                            <td>{{ store.name }}</td>
+                            <td>{{ store.address }}</td>
+                            <td><a href="{{ url_for("store.get_store_detail",id=store.id,page=1) }}">进入店铺</a></td>
+                            <td>
+                                <form action="{{ url_for("user.cancel_collect",store_id=store.id,type="home") }}" method="post">
+                                    <p>
+                                        <input type="image" src="{{ url_for("store.get_image",username="collected") }}" alt="collected">
+                                    </p>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+				</tbody>
+			</table>
+    </ul>
+        </div>
+	</div>
+</div>
+{% endblock body %}

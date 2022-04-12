@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+            #footer {
+                height: 40px;
+                line-height: 40px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                background: white;
+                color: green;
+                font-family: Arial;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for("user.admin") }}">审核中心</a>
+                    </div>
+                        <div>
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown"><a href="{{ url_for("user.change_conditions") }}">管理敏感词句</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.manage_report",page=1) }}">审核用户举报</a></li>
+                                <li class="dropdown"><a href="{{ url_for("user.admin_search") }}">查询数据</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <form action="{{ url_for("user.admin_search") }}" method="post">
+                    <label>
+                        输入ID:
+                        <input type="text" name="ID">
+                    </label>
+                    <br>
+                    <br>
+
+                    <input type="radio" name="type" checked="checked" value="user_id"> <b>User_ID</b>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="type" value="store_id">  <b>Store_ID</b>
+                    <input type="radio" name="type" value="rider_id">  <b>Rider_ID</b>
+                    <input type="radio" name="type" value="good_id">  <b>Good_ID</b>
+                    <input type="radio" name="type" value="order_id">  <b>Order_ID</b>
+                    <input type="radio" name="type" value="report_id">  <b>Report_ID</b>
+                    <br>
+                    <br>
+                    <input type="submit" name="search" value="查 询">
+                </form>
+                <div>
+                    <br>
+                    <br>
+                    <br>
+                    {% if state == "null" %}
+                        <p>还未查询</p>
+                    {% elif state == "查询失败" %}
+                        <p>数据库中未查到该数据</p>
+                    {% else %}
+                        {% if type == "user_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            User_ID
+                                        </th>
+                                        <th>
+                                            Nick_Name
+                                        </th>
+                                        <th>
+                                            Money
+                                        </th>
+                                        <th>
+                                            Address
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.nick_name }}</td>
+                                            <td>{{ data.money }}</td>
+                                            <td>{{ data.address }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% elif type == "store_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Store_ID
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Money
+                                        </th>
+                                        <th>
+                                            Address
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.money }}</td>
+                                            <td>{{ data.address }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% elif type == "rider_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Rider_ID
+                                        </th>
+                                        <th>
+                                            Money
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.money }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% elif type == "good_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Good_ID
+                                        </th>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Price
+                                        </th>
+                                        <th>
+                                            Store_ID
+                                        </th>
+                                        <th>
+                                            Sales
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.name }}</td>
+                                            <td>{{ data.price }}</td>
+                                            <td>{{ data.store_id }}</td>
+                                            <td>{{ data.sales }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% elif type == "order_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Order_ID
+                                        </th>
+                                        <th>
+                                            Price
+                                        </th>
+                                        <th>
+                                            Rider_ID
+                                        </th>
+                                        <th>
+                                            Good_ID
+                                        </th>
+                                        <th>
+                                            Store_ID
+                                        </th>
+                                        <th>
+                                            Creat_Time
+                                        </th>
+                                        <th>
+                                            Over_Time
+                                        </th>
+                                        <th>
+                                            Report_State
+                                        </th>
+                                        <th>
+                                            Reward_Money
+                                        </th>
+                                        <th>
+                                            User_Address
+                                        </th>
+                                        <th>
+                                            Store_Address
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.price }}</td>
+                                            <td>{{ data.rider_id }}</td>
+                                            <td>{{ data.good_id }}</td>
+                                            <td>{{ data.store_id }}</td>
+                                            <td>{{ data.creat_time }}</td>
+                                            <td>{{ data.over_time }}</td>
+                                            <td>{{ data.report_state }}</td>
+                                            <td>{{ data.reward_money }}</td>
+                                            <td>{{ data.user_address }}</td>
+                                            <td>{{ data.store_address }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% elif type == "report_id" %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Report_ID
+                                        </th>
+                                        <th>
+                                            Rider_ID
+                                        </th>
+                                        <th>
+                                            User_ID
+                                        </th>
+                                        <th>
+                                            Order_ID
+                                        </th>
+                                        <th>
+                                            Judge
+                                        </th>
+                                        <th>
+                                            Content
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>{{ data.id }}</td>
+                                            <td>{{ data.rider_id }}</td>
+                                            <td>{{ data.user_id }}</td>
+                                            <td>{{ data.order_id }}</td>
+                                            <td>{{ data.judge }}</td>
+                                            <td>{{ data.content }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+
+</div>
+                </div>
+            </div>
+        <div id="footer">CopyRight@copy2022-2022 Titans.All Rights Reserved </div>
+    </body>
+</html>
